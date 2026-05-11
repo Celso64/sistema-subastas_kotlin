@@ -13,6 +13,9 @@ data class CompradorData(private val nombre: String, private val contacto: Strin
 
 
 
-        return lista_errores.toList().joinToString(separator = "; ") + "."
+        if(!lista_errores.isEmpty()) {
+            return lista_errores.toList().joinToString(separator = "; ") + "."
+        }
+        return ""
     }
 }
