@@ -16,6 +16,7 @@ fun main() = application {
         modules(SharedModule)
     }
 
+
     Window(
         onCloseRequest = ::exitApplication,
         title = "Subastas",
