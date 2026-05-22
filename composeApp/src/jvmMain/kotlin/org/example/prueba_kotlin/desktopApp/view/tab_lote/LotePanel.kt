@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import org.example.prueba_kotlin.shared.service.CompradorService
 import org.example.prueba_kotlin.shared.service.LoteService
 import org.example.prueba_kotlin.desktopApp.view.tab_comprador.Screen
+import org.example.prueba_kotlin.desktopApp.view.tab_lote.form.LoteForm
 import org.koin.compose.koinInject
 
 @Composable

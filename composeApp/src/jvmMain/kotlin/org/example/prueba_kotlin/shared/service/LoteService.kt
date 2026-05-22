@@ -1,10 +1,12 @@
 package org.example.prueba_kotlin.shared.service
 
+import org.example.prueba_kotlin.shared.constant.FormatoFecha
 import org.example.prueba_kotlin.shared.model.ItemLote
 import org.example.prueba_kotlin.shared.model.Lote
 import org.example.prueba_kotlin.shared.repository.LoteRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.time.LocalDate
 import java.util.Objects
 import java.util.UUID
 
@@ -17,27 +19,18 @@ class LoteService(private val repository: LoteRepository): KoinComponent {
         return repository.findAll()
     }
 
-    fun add_lote(items: Map<String, Int>, id_comprador: String, descripcion: String = ""){
+    fun add_lote(items: Map<String, Int>, id_comprador: String, descripcion: String = "", fecha_vencimiento: LocalDate){
 
 
         val comprador = compradorService.find_by_id(id_comprador)
 
         if(Objects.nonNull(comprador)){
-            val lote_nuevo = comprador?.let { Lote(items = generateItems(items), descripcion = descripcion, comprador = it) }
+            val lote_nuevo = comprador?.let { Lote(items = generateItems(items), descripcion = descripcion, fecha_vencimiento = fecha_vencimiento.format(
+                FormatoFecha.DEFAULT), comprador = it) }
             if (lote_nuevo != null) {
                 repository.save(lote_nuevo)
             }
         }
-
-
-//
-//        println("LOTE_SERVICE | COMPRADOR: ${comprador.toString()}")
-//
-//        if (Objects.nonNull(comprador)){
-//            val items_creados = generateItems(items)
-//            val lote_nuevo = comprador?.let { Lote(items= items_creados, descripcion = descripcion, comprador = it) }
-//            lotes[lote_nuevo?.id as UUID] = lote_nuevo
-//        }
 
     }
 

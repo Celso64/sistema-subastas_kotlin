@@ -137,7 +137,7 @@ fun LoteTable(loteService: LoteService, onNavigateToForm: () -> Unit) {
         ){
         LazyColumn {
             items(listaFiltrada) { lote ->
-                val color_fila: Color = if (lote.vencido()) Colores.LOTE_VENCIDO else Colores.LOTE_ACTIVO
+                val color_fila: Color = if (lote.vencido()) Colores.LOTE_VENCIDO else if (lote.vence_hoy()) Colores.LOTE_CASI_VENCIDO else Colores.LOTE_ACTIVO
 
                 Row(
                     Modifier.height(36.dp).animateItem().background(color = color_fila),

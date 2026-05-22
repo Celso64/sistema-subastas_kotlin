@@ -24,4 +24,9 @@ data class Lote(
         val vencimiento: LocalDate = LocalDate.parse(this.fecha_vencimiento, FormatoFecha.DEFAULT)
         return LocalDate.now().isAfter(vencimiento) && estado.equals(EstadoLote.pendiente)
     }
+
+    fun vence_hoy(): Boolean{
+        val vencimiento: LocalDate = LocalDate.parse(this.fecha_vencimiento, FormatoFecha.DEFAULT)
+        return LocalDate.now().equals(vencimiento) && estado.equals(EstadoLote.pendiente)
+    }
 }

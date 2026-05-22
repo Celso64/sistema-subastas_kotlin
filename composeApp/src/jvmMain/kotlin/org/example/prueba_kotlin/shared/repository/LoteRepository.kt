@@ -20,7 +20,9 @@ class LoteRepository (private val db_service: DBService) {
             }while (lote.id.toString().equals(id))
         }
 
-        val sql = "INSERT INTO lote (id, descripcion, fecha_creacion, fecha_vencimiento, id_comprador) VALUES (?, ?, ?, ?, ?)"
+        val id_estado: String = get_initial_state()
+
+        val sql = "INSERT INTO lote (id, descripcion, fecha_creacion, fecha_vencimiento, id_comprador, id_estado) VALUES (?, ?, ?, ?, ?, ?)"
 
         db_service.connect().use { conn ->
             conn.prepareStatement(sql).use { pstmt ->
@@ -29,6 +31,7 @@ class LoteRepository (private val db_service: DBService) {
                 pstmt.setString(3, lote.fecha_creacion.toString())
                 pstmt.setString(4, lote.fecha_vencimiento.toString())
                 pstmt.setString(5, lote.comprador.id.toString())
+                pstmt.setString(6, id_estado)
                 pstmt.executeUpdate()
             }
         }
@@ -142,6 +145,18 @@ class LoteRepository (private val db_service: DBService) {
                 pstmt.setString(1, id)
                 pstmt.executeQuery().use { rs ->
                     rs.next()
+                }
+            }
+        }
+    }
+
+    private fun get_initial_state(): String{
+        val sql = "SELECT id FROM estado_lote WHERE nombre = \"pendiente\" LIMIT 1"
+
+        return db_service.connect().use { conn ->
+            conn.prepareStatement(sql).use { pstmt ->
+                pstmt.executeQuery().use { rs ->
+                    rs.getString("id")
                 }
             }
         }

@@ -41,12 +41,22 @@ import androidx.compose.ui.focus.FocusTargetModifierNode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import org.example.prueba_kotlin.desktopApp.view.Colores
+import org.example.prueba_kotlin.desktopApp.view.ErrorDialog
+import java.sql.SQLException
 
 @Composable
 fun CompradorForm(compradorService: CompradorService, onBack: () -> Unit) {
     var nombre by remember { mutableStateOf("") }
     var contacto by remember { mutableStateOf("") }
     var invalido by remember { mutableStateOf("") }
+
+    var cuerpo_error by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf(false) }
+
+
+    if (!cuerpo_error.isEmpty()){
+        ErrorDialog(cuerpo_error, { cuerpo_error = "" })
+    }
 
 
     AnimatedVisibility(
@@ -132,8 +142,12 @@ fun CompradorForm(compradorService: CompradorService, onBack: () -> Unit) {
             Button(onClick = {
                 val valid = CompradorData(nombre, contacto).es_valido()
                 if (valid.isEmpty()) {
-                    compradorService.add_comprador(nombre = nombre, contacto = contacto)
-                    onBack()
+                    try{
+                        compradorService.add_comprador(nombre = nombre, contacto = contacto)
+                        onBack()
+                    }catch (e: Exception){
+                        cuerpo_error = e.message?: ""
+                    }
                 } else {
                     invalido = valid
                 }

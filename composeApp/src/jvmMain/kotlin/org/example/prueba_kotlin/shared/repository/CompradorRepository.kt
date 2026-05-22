@@ -2,6 +2,7 @@ package org.example.prueba_kotlin.shared.repository
 
 import org.example.prueba_kotlin.shared.db.DBService
 import org.example.prueba_kotlin.shared.model.Comprador
+import java.sql.SQLException
 import java.util.UUID
 
 class CompradorRepository(private val db_service: DBService) {
@@ -18,9 +19,13 @@ class CompradorRepository(private val db_service: DBService) {
             }while (comprador.id.toString().equals(id))
         }
 
+        if(existsByName(comprador.nombre)){
+            throw RuntimeException("El nombre debe ser unico")
+        }
+
+
         val sql = "INSERT INTO comprador (id, nombre, contacto, fecha_creacion) VALUES (?, ?, ?, ?)"
 
-        // .use asegura que la conexión y el statement se cierren al terminar
         db_service.connect().use { conn ->
             conn.prepareStatement(sql).use { pstmt ->
                 pstmt.setString(1, id)
@@ -30,6 +35,7 @@ class CompradorRepository(private val db_service: DBService) {
                 pstmt.executeUpdate()
             }
         }
+
     }
 
     fun findAll(): List<Comprador> {
@@ -83,6 +89,19 @@ class CompradorRepository(private val db_service: DBService) {
         return db_service.connect().use { conn ->
             conn.prepareStatement(sql).use { pstmt ->
                 pstmt.setString(1, id)
+                pstmt.executeQuery().use { rs ->
+                    rs.next()
+                }
+            }
+        }
+    }
+
+    fun existsByName(nombre: String): Boolean {
+        val sql = "SELECT 1 FROM comprador WHERE nombre = ? LIMIT 1"
+
+        return db_service.connect().use { conn ->
+            conn.prepareStatement(sql).use { pstmt ->
+                pstmt.setString(1, nombre)
                 pstmt.executeQuery().use { rs ->
                     rs.next()
                 }
