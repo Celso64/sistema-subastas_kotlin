@@ -2,7 +2,11 @@ package org.example.prueba_kotlin.shared.repository
 
 import org.example.prueba_kotlin.shared.db.DBService
 import org.example.prueba_kotlin.shared.model.Comprador
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.sql.SQLException
+import java.util.Objects
 import java.util.UUID
 
 class CompradorRepository(private val db_service: DBService) {
@@ -23,8 +27,19 @@ class CompradorRepository(private val db_service: DBService) {
             throw RuntimeException("El nombre debe ser unico")
         }
 
+        var nombre_imagen: String? = null
 
-        val sql = "INSERT INTO comprador (id, nombre, contacto, fecha_creacion) VALUES (?, ?, ?, ?)"
+        if(Objects.nonNull(comprador.imagen)){
+            val nombre_archivo = comprador.imagen?.name.toString().split(".")
+            val nombre = nombre_archivo[0]
+            val extension = nombre_archivo[1]
+            nombre_imagen = "${comprador.id}.$extension"
+            val f = FileOutputStream("data/img/$nombre_imagen")
+            f.write(comprador.imagen?.readBytes())
+        }
+
+
+        val sql = "INSERT INTO comprador (id, nombre, contacto, fecha_creacion, imagen_nombre) VALUES (?, ?, ?, ?, ?)"
 
         db_service.connect().use { conn ->
             conn.prepareStatement(sql).use { pstmt ->
@@ -32,6 +47,7 @@ class CompradorRepository(private val db_service: DBService) {
                 pstmt.setString(2, comprador.nombre)
                 pstmt.setString(3, comprador.contacto)
                 pstmt.setString(4, comprador.fecha_creacion)
+                pstmt.setString(5, nombre_imagen)
                 pstmt.executeUpdate()
             }
         }
@@ -69,11 +85,18 @@ class CompradorRepository(private val db_service: DBService) {
                 pstmt.setString(1, id)
                 pstmt.executeQuery().use { rs ->
                     if (rs.next()) {
+                        val imagen_nombre: String? = rs.getString("imagen_nombre")
+                        var file: File? = null
+                        if(Objects.nonNull(imagen_nombre)){
+                            file = File("data/img/${imagen_nombre?: ""}")
+                        }
+                        println(file.toString())
                         Comprador(
                             id = UUID.fromString(rs.getString("id")),
                             nombre = rs.getString("nombre"),
                             contacto = rs.getString("contacto"),
                             fecha_creacion = rs.getString("fecha_creacion"),
+                            imagen = file
                         )
                     } else {
                         null // Si no se encuentra el ID

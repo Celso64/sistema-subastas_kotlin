@@ -10,7 +10,7 @@ import org.koin.dsl.module
 
 val SharedModule = module {
 
-    single { "mi_database.db" }
+    single { "data/mi_database.db" }
     single<DBService> { SQLiteService(dbPath = get()) }
 
     single { CompradorRepository(db_service = get()) }

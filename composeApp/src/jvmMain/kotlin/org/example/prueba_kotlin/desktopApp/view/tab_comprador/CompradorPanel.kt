@@ -18,6 +18,7 @@ import org.koin.compose.koinInject
 fun CompradorPanel() {
     val compradorService = koinInject<CompradorService>()
     var currentScreen by remember { mutableStateOf<Screen>(Screen.Table) }
+    var compradorDetalle by remember { mutableStateOf("") }
 
     val compradores by compradorService.uiState.collectAsState()
 
@@ -27,10 +28,18 @@ fun CompradorPanel() {
                 when (screen) {
                     is Screen.Table -> CompradorTable(
                         compradores = compradores.toList(),
-                        onNavigateToForm = { currentScreen = Screen.Form }
+                        onNavigateToForm = { currentScreen = Screen.Form },
+                        onDetalle = { id: String ->
+                            compradorDetalle = id
+                            currentScreen = Screen.Detail }
                     )
                     is Screen.Form -> CompradorForm(
                         compradorService = compradorService,
+                        onBack = { currentScreen = Screen.Table }
+                    )
+                    is Screen.Detail -> CompradorDetalle(
+                        service = compradorService,
+                        id_comprador = compradorDetalle,
                         onBack = { currentScreen = Screen.Table }
                     )
                 }

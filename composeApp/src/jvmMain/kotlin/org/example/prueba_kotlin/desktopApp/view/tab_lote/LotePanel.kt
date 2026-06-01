@@ -33,6 +33,8 @@ fun LotePanel() {
                         onBack = { currentScreen = Screen.Table },
                         compradorService = compradorService
                     )
+
+                    else -> {}
                 }
             }
         }

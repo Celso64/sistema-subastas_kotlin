@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import org.example.prueba_kotlin.shared.model.Comprador
 
 @Composable
-fun CompradorTable(compradores: List<Comprador>, onNavigateToForm: () -> Unit) {
+fun CompradorTable(compradores: List<Comprador>, onNavigateToForm: () -> Unit, onDetalle: (id_comprador: String) -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
 
@@ -60,7 +60,7 @@ fun CompradorTable(compradores: List<Comprador>, onNavigateToForm: () -> Unit) {
                     Text(comprador.contacto, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
 
 
-                    Button(onClick = { println("Ver Detalle de ${comprador.id}") },
+                    Button(onClick = { onDetalle(comprador.id.toString()) },
                         modifier = Modifier.weight(1f)
                         ) {
                         Icon(

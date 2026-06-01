@@ -9,11 +9,23 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import prueba_kotlin.composeapp.generated.resources.Res
 import prueba_kotlin.composeapp.generated.resources.logo
+import java.nio.file.Files
+import java.nio.file.Paths
 
 fun main() = application {
     startKoin {
         printLogger(Level.ERROR)
         modules(SharedModule)
+    }
+
+    val rutaDirectorio = Paths.get("data")
+    val rutaImg = Paths.get("data/img")
+
+    try {
+        Files.createDirectories(rutaDirectorio)
+        Files.createDirectories(rutaImg)
+    } catch (e: Exception) {
+        println("Error al crear la carpeta: ${e.message}")
     }
 
 

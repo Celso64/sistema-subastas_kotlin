@@ -42,12 +42,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import org.example.prueba_kotlin.desktopApp.view.Colores
 import org.example.prueba_kotlin.desktopApp.view.ErrorDialog
+import org.example.prueba_kotlin.desktopApp.view.components.ImageForm
+import java.io.File
 import java.sql.SQLException
 
 @Composable
 fun CompradorForm(compradorService: CompradorService, onBack: () -> Unit) {
     var nombre by remember { mutableStateOf("") }
     var contacto by remember { mutableStateOf("") }
+    var imagen by remember { mutableStateOf<File?>(null) }
     var invalido by remember { mutableStateOf("") }
 
     var cuerpo_error by remember { mutableStateOf("") }
@@ -96,7 +99,7 @@ fun CompradorForm(compradorService: CompradorService, onBack: () -> Unit) {
                     .padding(end = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Aqui iria el componente de agregar imagen.")
+                ImageForm(onImageSaved = { file: File -> imagen = file })
             }
 
             VerticalDivider(
@@ -143,7 +146,7 @@ fun CompradorForm(compradorService: CompradorService, onBack: () -> Unit) {
                 val valid = CompradorData(nombre, contacto).es_valido()
                 if (valid.isEmpty()) {
                     try{
-                        compradorService.add_comprador(nombre = nombre, contacto = contacto)
+                        compradorService.add_comprador(nombre = nombre, contacto = contacto, imagen = imagen)
                         onBack()
                     }catch (e: Exception){
                         cuerpo_error = e.message?: ""

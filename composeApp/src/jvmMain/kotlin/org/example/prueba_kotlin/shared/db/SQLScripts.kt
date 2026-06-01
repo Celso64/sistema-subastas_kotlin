@@ -7,7 +7,8 @@ object SQLScripts {
             id TEXT PRIMARY KEY,
             nombre TEXT NOT NULL UNIQUE,
             contacto TEXT UNIQUE,
-            fecha_creacion TEXT NOT NULL
+            fecha_creacion TEXT NOT NULL,
+            imagen_nombre TEXT
         );
         """.trimIndent(),
         """
